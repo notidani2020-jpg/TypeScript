@@ -1,3 +1,22 @@
+// ==========================================
+// STAGE 1 - TYPES E INFERENCIA
+// ==========================================
+
+const productName: string = "Laptop";
+const price: number = 2800000;
+const stock: number = 5;
+const available: boolean = stock > 0;
+
+console.log("Producto:", productName);
+console.log("Precio:", price);
+console.log("Stock:", stock);
+console.log("Disponible:", available);
+
+
+// ==========================================
+// STAGE 3 Y 4 - INTERFACE Y OPCIONALES
+// ==========================================
+
 interface Product {
   id: number;
   name: string;
@@ -7,7 +26,54 @@ interface Product {
   available: boolean;
 }
 
-type OrderStatus = "pending" | "paid" | "shipped" | "cancelled";
+type ProductId = number;
+
+const featuredProductId: ProductId = 1;
+
+
+// ==========================================
+// STAGE 2 - CATÁLOGO DE PRODUCTOS
+// ==========================================
+
+const products: Product[] = [
+  {
+    id: 1,
+    name: "Laptop",
+    description: "Laptop para trabajo y estudio",
+    price: 2800000,
+    stock: 5,
+    available: true
+  },
+  {
+    id: 2,
+    name: "Monitor",
+    description: "Monitor Full HD",
+    price: 850000,
+    stock: 8,
+    available: true
+  },
+  {
+    id: 3,
+    name: "Mouse",
+    description: "Mouse inalámbrico",
+    price: 80000,
+    stock: 0,
+    available: false
+  }
+];
+
+console.table(products);
+
+
+// ==========================================
+// STAGE 5 - UNION TYPES
+// ==========================================
+
+type OrderStatus =
+  | "pending"
+  | "paid"
+  | "shipped"
+  | "cancelled";
 
 interface Customer {
   id: number;
@@ -23,37 +89,35 @@ interface OrderItem {
   quantity: number;
 }
 
+
+// ==========================================
+// STAGE 8 - ENUMS
+// ==========================================
+
+enum PaymentMethod {
+  CASH = "CASH",
+  CARD = "CARD",
+  TRANSFER = "TRANSFER"
+}
+
+
+// ==========================================
+// STAGE 5 Y 8 - ORDER
+// ==========================================
+
 interface Order {
   id: number;
   customer: Customer;
   items: OrderItem[];
   status: OrderStatus;
   total: number;
+  paymentMethod: PaymentMethod;
 }
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Laptop",
-    price: 2800000,
-    stock: 5,
-    available: true
-  },
-  {
-    id: 2,
-    name: "Monitor",
-    price: 850000,
-    stock: 8,
-    available: true
-  },
-  {
-    id: 3,
-    name: "Mouse",
-    price: 80000,
-    stock: 0,
-    available: false
-  }
-];
+
+// ==========================================
+// STAGE 6 - FUNCIONES TIPADAS
+// ==========================================
 
 function calculateSubtotal(
   unitPrice: number,
@@ -62,9 +126,12 @@ function calculateSubtotal(
   return unitPrice * quantity;
 }
 
-function calculateOrderTotal(items: OrderItem[]): number {
+function calculateOrderTotal(
+  items: OrderItem[]
+): number {
   return items.reduce(
-    (total, item) => total + item.unitPrice * item.quantity,
+    (total, item) =>
+      total + item.unitPrice * item.quantity,
     0
   );
 }
@@ -73,7 +140,9 @@ function findProductById(
   products: Product[],
   id: number
 ): Product | undefined {
-  return products.find((product) => product.id === id);
+  return products.find(
+    (product) => product.id === id
+  );
 }
 
 function updateStock(
@@ -81,7 +150,9 @@ function updateStock(
   quantity: number
 ): Product {
   if (quantity <= 0) {
-    throw new Error("Quantity must be greater than zero");
+    throw new Error(
+      "Quantity must be greater than zero"
+    );
   }
 
   if (quantity > product.stock) {
@@ -97,26 +168,93 @@ function updateStock(
   };
 }
 
-// Stage 7 - Narrowing
 
-const selectedProduct = findProductById(products, 2);
+// ==========================================
+// STAGE 7 - NARROWING
+// ==========================================
+
+const selectedProduct =
+  findProductById(products, 2);
 
 if (selectedProduct) {
-  console.log("Producto encontrado:", selectedProduct.name);
+  console.log(
+    "Producto encontrado:",
+    selectedProduct.name
+  );
 } else {
   console.log("Producto no encontrado");
 }
 
+
 type Identifier = number | string;
 
-function printIdentifier(id: Identifier): void {
+function printIdentifier(
+  id: Identifier
+): void {
   if (typeof id === "number") {
     console.log(`ID numérico: ${id}`);
     return;
   }
 
-  console.log(`ID textual: ${id.toUpperCase()}`);
+  console.log(
+    `ID textual: ${id.toUpperCase()}`
+  );
 }
 
 printIdentifier(123);
 printIdentifier("producto-001");
+
+
+// ==========================================
+// CREACIÓN DE CLIENTE Y PEDIDO
+// ==========================================
+
+const customer: Customer = {
+  id: 1,
+  name: "Danilo Moncada",
+  email: "danilo@gmail.com",
+  phone: "3001234567"
+};
+
+const orderItem: OrderItem = {
+  productId: 1,
+  productName: "Laptop",
+  unitPrice: 2800000,
+  quantity: 1
+};
+
+const order: Order = {
+  id: 1,
+  customer: customer,
+  items: [orderItem],
+  status: "pending",
+  total: calculateOrderTotal([orderItem]),
+  paymentMethod: PaymentMethod.CARD
+};
+
+
+// ==========================================
+// RESULTADOS
+// ==========================================
+
+console.log(
+  "Producto destacado:",
+  featuredProductId
+);
+
+console.log(
+  "Subtotal:",
+  calculateSubtotal(
+    orderItem.unitPrice,
+    orderItem.quantity
+  )
+);
+
+console.log("Cliente:", customer);
+
+console.log("Pedido:", order);
+
+console.log(
+  "Método de pago:",
+  order.paymentMethod
+);
