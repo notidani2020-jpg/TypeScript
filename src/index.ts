@@ -1,5 +1,3 @@
-type OrderStatus = "pending" | "paid" | "shipped" | "cancelled";
-
 interface Product {
   id: number;
   name: string;
@@ -8,6 +6,8 @@ interface Product {
   stock: number;
   available: boolean;
 }
+
+type OrderStatus = "pending" | "paid" | "shipped" | "cancelled";
 
 interface Customer {
   id: number;
@@ -64,8 +64,7 @@ function calculateSubtotal(
 
 function calculateOrderTotal(items: OrderItem[]): number {
   return items.reduce(
-    (total, item) =>
-      total + item.unitPrice * item.quantity,
+    (total, item) => total + item.unitPrice * item.quantity,
     0
   );
 }
@@ -98,19 +97,26 @@ function updateStock(
   };
 }
 
-const selectedProduct = findProductById(products, 1);
+// Stage 7 - Narrowing
+
+const selectedProduct = findProductById(products, 2);
 
 if (selectedProduct) {
   console.log("Producto encontrado:", selectedProduct.name);
-
-  const subtotal = calculateSubtotal(
-    selectedProduct.price,
-    2
-  );
-
-  console.log("Subtotal:", subtotal);
-
-  const updatedProduct = updateStock(selectedProduct, 2);
-
-  console.log("Nuevo stock:", updatedProduct.stock);
+} else {
+  console.log("Producto no encontrado");
 }
+
+type Identifier = number | string;
+
+function printIdentifier(id: Identifier): void {
+  if (typeof id === "number") {
+    console.log(`ID numérico: ${id}`);
+    return;
+  }
+
+  console.log(`ID textual: ${id.toUpperCase()}`);
+}
+
+printIdentifier(123);
+printIdentifier("producto-001");
