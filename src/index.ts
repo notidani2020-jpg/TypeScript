@@ -1,5 +1,5 @@
 // ==========================================
-// STAGE 1 - TYPES E INFERENCIA
+// STAGE 1 - TYPES
 // ==========================================
 
 const productName: string = "Laptop";
@@ -14,7 +14,7 @@ console.log("Disponible:", available);
 
 
 // ==========================================
-// STAGE 3 Y 4 - INTERFACE Y OPCIONALES
+// STAGE 3 Y 4 - PRODUCT
 // ==========================================
 
 interface Product {
@@ -32,7 +32,7 @@ const featuredProductId: ProductId = 1;
 
 
 // ==========================================
-// STAGE 2 - CATÁLOGO DE PRODUCTOS
+// STAGE 2 - PRODUCTOS
 // ==========================================
 
 const products: Product[] = [
@@ -66,7 +66,7 @@ console.table(products);
 
 
 // ==========================================
-// STAGE 5 - UNION TYPES
+// STAGE 5 - CUSTOMER Y ORDER
 // ==========================================
 
 type OrderStatus =
@@ -91,7 +91,7 @@ interface OrderItem {
 
 
 // ==========================================
-// STAGE 8 - ENUMS
+// STAGE 8 - ENUM
 // ==========================================
 
 enum PaymentMethod {
@@ -102,7 +102,7 @@ enum PaymentMethod {
 
 
 // ==========================================
-// STAGE 5 Y 8 - ORDER
+// ORDER
 // ==========================================
 
 interface Order {
@@ -116,7 +116,7 @@ interface Order {
 
 
 // ==========================================
-// STAGE 6 - FUNCIONES TIPADAS
+// STAGE 6 - FUNCIONES
 // ==========================================
 
 function calculateSubtotal(
@@ -206,7 +206,7 @@ printIdentifier("producto-001");
 
 
 // ==========================================
-// CREACIÓN DE CLIENTE Y PEDIDO
+// CLIENTE Y PEDIDO
 // ==========================================
 
 const customer: Customer = {
@@ -234,20 +234,47 @@ const order: Order = {
 
 
 // ==========================================
-// RESULTADOS
+// STAGE 9 - GENERICS
 // ==========================================
 
-console.log(
-  "Producto destacado:",
-  featuredProductId
-);
+interface ServiceResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+const productResponse: ServiceResponse<Product> = {
+  success: true,
+  message: "Producto encontrado",
+  data: products[0]!
+};
+
+const catalogResponse: ServiceResponse<Product[]> = {
+  success: true,
+  message: "Catálogo obtenido",
+  data: products
+};
+
+function getFirstItem<T>(
+  items: T[]
+): T | undefined {
+  return items[0];
+}
+
+
+// ==========================================
+// PRUEBAS DE GENERICS
+// ==========================================
+
+console.log("Respuesta de producto:");
+console.log(productResponse);
+
+console.log("Respuesta del catálogo:");
+console.log(catalogResponse);
 
 console.log(
-  "Subtotal:",
-  calculateSubtotal(
-    orderItem.unitPrice,
-    orderItem.quantity
-  )
+  "Primer producto:",
+  getFirstItem(products)
 );
 
 console.log("Cliente:", customer);
@@ -257,4 +284,9 @@ console.log("Pedido:", order);
 console.log(
   "Método de pago:",
   order.paymentMethod
+);
+
+console.log(
+  "Total del pedido:",
+  order.total
 );
