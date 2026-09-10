@@ -1,5 +1,14 @@
 type OrderStatus = "pending" | "paid" | "shipped" | "cancelled";
 
+interface Product {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  stock: number;
+  available: boolean;
+}
+
 interface Customer {
   id: number;
   name: string;
@@ -22,27 +31,86 @@ interface Order {
   total: number;
 }
 
-const customer: Customer = {
-  id: 1,
-  name: "Danilo Moncada",
-  email: "danilo@gmail.com",
-  phone: "3001234567"
-};
+const products: Product[] = [
+  {
+    id: 1,
+    name: "Laptop",
+    price: 2800000,
+    stock: 5,
+    available: true
+  },
+  {
+    id: 2,
+    name: "Monitor",
+    price: 850000,
+    stock: 8,
+    available: true
+  },
+  {
+    id: 3,
+    name: "Mouse",
+    price: 80000,
+    stock: 0,
+    available: false
+  }
+];
 
-const orderItem: OrderItem = {
-  productId: 1,
-  productName: "Laptop",
-  unitPrice: 2800000,
-  quantity: 1
-};
+function calculateSubtotal(
+  unitPrice: number,
+  quantity: number
+): number {
+  return unitPrice * quantity;
+}
 
-const order: Order = {
-  id: 1,
-  customer,
-  items: [orderItem],
-  status: "pending",
-  total: 2800000
-};
+function calculateOrderTotal(items: OrderItem[]): number {
+  return items.reduce(
+    (total, item) =>
+      total + item.unitPrice * item.quantity,
+    0
+  );
+}
 
-console.log("Cliente:", customer);
-console.log("Pedido:", order);
+function findProductById(
+  products: Product[],
+  id: number
+): Product | undefined {
+  return products.find((product) => product.id === id);
+}
+
+function updateStock(
+  product: Product,
+  quantity: number
+): Product {
+  if (quantity <= 0) {
+    throw new Error("Quantity must be greater than zero");
+  }
+
+  if (quantity > product.stock) {
+    throw new Error("Insufficient stock");
+  }
+
+  const newStock = product.stock - quantity;
+
+  return {
+    ...product,
+    stock: newStock,
+    available: newStock > 0
+  };
+}
+
+const selectedProduct = findProductById(products, 1);
+
+if (selectedProduct) {
+  console.log("Producto encontrado:", selectedProduct.name);
+
+  const subtotal = calculateSubtotal(
+    selectedProduct.price,
+    2
+  );
+
+  console.log("Subtotal:", subtotal);
+
+  const updatedProduct = updateStock(selectedProduct, 2);
+
+  console.log("Nuevo stock:", updatedProduct.stock);
+}
