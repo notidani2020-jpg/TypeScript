@@ -7,8 +7,8 @@ export class CustomerService {
         },
         {
             customerId: 2,
-            customerName: "Juan Pérez",
-            email: "juan@gmail.com"
+            customerName: "Cristian Diaz",
+            email: "cristian@gmail.com"
         }
     ];
     getCustomers() {
